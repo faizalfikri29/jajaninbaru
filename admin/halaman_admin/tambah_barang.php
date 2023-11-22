@@ -46,6 +46,10 @@
                 <input type="file" class="form-control" name="gambar_produk" id="gambar_produk" required>
             </div>
             <div class="form-group">
+                <label for="nama_penjual">No Telpone</label>
+                <input type="text" class="form-control" name="no_telpone" id="nama_penjual" placeholder="no_telpone" required>
+            </div>
+            <div class="form-group">
                 <label for="harga_jual">Harga_jual</label>
                 <input type="text" class="form-control" name="harga_jual" id="harga_jual" placeholder="Harga jual" required>
             </div>
@@ -67,6 +71,7 @@
             $nama_barang = $_POST['nama_barang'];
             $nama_penjual = $_POST['nama_penjual'];
             $harga_jual = $_POST['harga_jual'];
+            $no_telpone = $_POST['no_telpone'];
             $stok = $_POST['stok'];
             $deksripsi_barang = $_POST['deksripsi_barang'];
 

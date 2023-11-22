@@ -5,6 +5,7 @@ if (isset($_POST['update'])) {
     $id_barang = $_POST['id_barang'];
     $nama_barang = $_POST['nama_barang'];
     $nama_penjual = $_POST['nama_penjual'];
+    $no_telpone = $_POST['no_telpone'];
     $harga_jual = $_POST['harga_jual'];
     $stok = $_POST['stok'];
     $deksripsi_barang = $_POST['deksripsi_barang'];
@@ -23,9 +24,9 @@ if (isset($_POST['update'])) {
 
     // Tentukan query SQL untuk melakukan update berdasarkan apakah gambar diunggah atau tidak
     if ($image_name) {
-        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang', gambar_produk = '$image_name' WHERE id_barang = $id_barang";
+        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', no_telpone = '$no_telpone', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang', gambar_produk = '$image_name' WHERE id_barang = $id_barang";
     } else {
-        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang' WHERE id_barang = $id_barang";
+        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', no_telpone = '$no_telpone', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang' WHERE id_barang = $id_barang";
     }
 
     $update_result = mysqli_query($conn, $query);

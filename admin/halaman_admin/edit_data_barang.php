@@ -73,6 +73,10 @@
                     <!-- Tambahkan input file untuk mengunggah gambar baru jika perlu -->
                     <input type="file" class="form-control-file" name="gambar_produk" accept="image/*">
                 </div>
+                <div class="form-group">
+                        <label for="no_telpone">No Telpone</label>
+                        <input type="text" class="form-control" name="no_telpone" required value="<?php echo $data['no_telpone']; ?>"/>
+                </div>
                 <!-- ... (tambahkan input fields lainnya) ... -->
                 <button type="submit" name="update" class="btn btn-primary">Simpan Perubahan</button>
                 <a class="btn btn-danger" href="stok_barang.php">Batal</a>

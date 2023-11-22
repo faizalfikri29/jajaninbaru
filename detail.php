@@ -7,6 +7,9 @@ $id_produk = $_GET['id'];
 // query ambil data barang
 $ambil = $koneksi->query("SELECT * FROM barang WHERE id_barang='$id_produk'");
 $detail = $ambil->fetch_assoc();
+
+// Mendapatkan nomor WhatsApp penjual dari data yang diambil
+$nomorWhatsAppPenjual = $detail['no_telpone'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -159,7 +162,7 @@ $detail = $ambil->fetch_assoc();
 </head>
 
 <body>
-<div class="container mt-5">
+    <div class="container mt-5">
         <!-- Tombol Kembali -->
         <div class="kembali mb-2">
             <a class="btn btn-primary" href="produk.php"><i class="fas fa-chevron-left"></i> Kembali</a>
@@ -177,68 +180,109 @@ $detail = $ambil->fetch_assoc();
                 <p class="product-seller">Stock : <?php echo $detail["stok"]; ?> </p>
                 <p class="product-description"><?php echo $detail["deksripsi_barang"]; ?></p>
 
-               <!-- ... Bagian lain dari kode HTML ... -->
+                <!-- ... Bagian lain dari kode HTML ... -->
 
-            <!-- Formulir Pembelian -->
-            <div class="form-section">
-                <label for="quantity">Jumlah yang Dibeli:</label>
-                <input type="number" id="quantity" name="quantity" min="1" value="#" oninput="updateTotal()">
+                <!-- Formulir Pembelian -->
+                <div class="form-section">
+                    <label for="quantity">Jumlah yang Dibeli:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" value="#" oninput="updateTotal()">
 
-                <label for="total">Total:</label>
-                <input type="text" id="total" name="total" placeholder="Rp.0" readonly>
+                    <label for="total">Total:</label>
+                    <input type="text" id="total" name="total" placeholder="Rp.0" readonly>
 
-                <label for="pembayaran">Pembayaran:</label>
-                <select id="pembayaran" name="pembayaran">
-                    <option value="code">Cod</option>
-                    <option value="dana">Dana</option>
-                </select>
+                    <label for="pembayaran">Pembayaran:</label>
+                    <select id="pembayaran" name="pembayaran">
+                        <option></option>
+                        <option value="code">Cod</option>
+                        <option value="dana">Dana</option>
+                    </select>
 
-                <label for="buyerName">Nama Pembeli:</label>
-                <input type="text" id="buyerName" name="buyerName" placeholder="Masukkan nama pembeli">
+                    <label for="buyerName">Nama Pembeli:</label>
+                    <input type="text" id="buyerName" name="buyerName" placeholder="Masukkan nama pembeli">
 
-                <label for="buyerAddress">Alamat Pembeli:</label>
-                <input type="text" id="buyerAddress" name="buyerAddress" placeholder="Masukkan alamat pembeli"></textarea>
+                    <label for="buyerAddress">Alamat Pembeli: (ALAMAT ANTAR PESANAN)</label>
+                    <input type="text" id="buyerAddress" name="buyerAddress" placeholder="Masukkan alamat pembeli"></textarea>
 
-                <label for="buyerPhone">Nomer Telepon Pembeli:</label>
-                <input type="tel" id="buyerPhone" name="buyerPhone" placeholder="Masukkan nomer telepon pembeli">
+                    <label for="buyerPhone">Nomer Telepon Pembeli:</label>
+                    <input type="tel" id="buyerPhone" name="buyerPhone" placeholder="Masukkan nomer telepon pembeli">
 
-                <button type="button" onclick="submitForm()">Beli Sekarang</button>
-            </div>
+                    <button type="button" onclick="submitForm()">Beli Sekarang</button>
+                </div>
 
-            <script>
-                function updateTotal() {
-                    // Ambil nilai jumlah dan harga dari elemen HTML
-                    var quantity = document.getElementById('quantity').value;
-                    var harga = <?php echo $detail["harga_jual"]; ?>;
+                <script>
+                    function updateTotal() {
+                        // Ambil nilai jumlah dan harga dari elemen HTML
+                        var quantity = document.getElementById('quantity').value;
+                        var harga = <?php echo $detail["harga_jual"]; ?>;
 
-                    // Hitung total dan format sebagai mata uang Rupiah
-                    var total = quantity * harga;
-                    var formattedTotal = "Rp " + number_format(total);
+                        // Hitung total dan format sebagai mata uang Rupiah
+                        var total = quantity * harga;
+                        var formattedTotal = "Rp " + number_format(total);
 
-                    // Setel nilai total di elemen HTML
-                    document.getElementById('total').value = formattedTotal;
-                }
+                        // Setel nilai total di elemen HTML
+                        document.getElementById('total').value = formattedTotal;
+                    }
 
-                function number_format(number) {
-                    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
+                    function number_format(number) {
+                        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
 
-                function submitForm() {
-                    // Tambahkan logika pengiriman formulir di sini
-                    alert("Formulir terkirim!");
-                }
-            </script>
+                    function submitForm() {
+                        // Tambahkan logika pengiriman formulir di sini
+                        alert("Formulir terkirim!");
+                    }
+                </script>
 
-            <!-- ... Bagian lain dari kode HTML ... -->
+                <!-- ... Bagian lain dari kode HTML ... -->
                 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                <!-- ... Bagian HTML sebelumnya ... -->
 
                 <script>
                     function submitForm() {
-                        // Tambahkan logika pengiriman formulir di sini
-                        alert("tolong arahkan ke wa");
+                        // Ambil nilai pembayaran dari elemen HTML
+                        var metodePembayaran = document.getElementById('pembayaran').value;
+
+                        // Ambil nilai formulir
+                        var quantity = document.getElementById('quantity').value;
+                        var total = document.getElementById('total').value;
+                        var buyerName = document.getElementById('buyerName').value;
+                        var buyerAddress = document.getElementById('buyerAddress').value;
+                        var buyerPhone = document.getElementById('buyerPhone').value;
+
+                        // Lakukan pengecekan metode pembayaran
+                        if (metodePembayaran === 'code') {
+                            // Jika metode pembayaran COD, arahkan ke nomor WhatsApp penjual
+                            var message = "Pemesanan Produk";
+                            message += "Nama Produk: " + "<?php echo $detail['nama_barang']; ?>";
+                            message += "Jumlah: " + quantity;
+                            message += "Total: " + total;
+                            message += "Nama Pembeli: " + buyerName;
+                            message += "Alamat Pembeli: " + buyerAddress;
+                            message += "Nomor Telepon Pembeli: " + buyerPhone;
+
+                            // Format nomor WhatsApp penjual
+                            var waNumber = "<?php echo $nomorWhatsAppPenjual; ?>";
+
+                            // Buat URL dengan pesan yang diformat
+                            var waUrl = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+
+                            // Arahkan pengguna ke WhatsApp
+                            window.location.href = waUrl;
+                        } else if (metodePembayaran === 'dana') {
+                            // Jika metode pembayaran Dana, arahkan ke halaman dengan QR Code Dana penjual
+                            window.location.href = 'URL_HALAMAN_DANA_QR_CODE_PENJUAL';
+                        } else {
+                            // Metode pembayaran tidak valid, tampilkan pesan kesalahan
+                            alert('Pilih metode pembayaran terlebih dahulu.');
+                        }
                     }
-                </script></body>
+                </script>
+
+
+                <!-- ... Bagian HTML setelahnya ... -->
+
+</body>
 
 </html>
