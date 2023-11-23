@@ -46,6 +46,10 @@
                 <input type="file" class="form-control" name="gambar_produk" id="gambar_produk" required>
             </div>
             <div class="form-group">
+                <label for="dana">Qris Dana</label>
+                <input type="file" class="form-control" name="dana" id="dana" required>
+            </div>
+            <div class="form-group">
                 <label for="no_telpone">No Telepon Penjual</label>
                 <input type="text" class="form-control" name="no_telpone" id="no_telpone" placeholder="No telepon penjual" required>
             </div>
@@ -65,48 +69,76 @@
             <a class="btn btn-danger btn-block" href="stok_barang.php">Batal</a>
         </form>
         <?php
-        include 'koneksiuser.php';
+include 'koneksiuser.php';
 
-        if (isset($_POST['simpan'])) {
-            $nama_barang = $_POST['nama_barang'];
-            $nama_penjual = $_POST['nama_penjual'];
-            $harga_jual = $_POST['harga_jual'];
-            $no_telpone = $_POST['no_telpone'];
-            $stok = $_POST['stok'];
-            $deksripsi_barang = $_POST['deksripsi_barang'];
+if (isset($_POST['simpan'])) {
+    $nama_barang = $_POST['nama_barang'];
+    $nama_penjual = $_POST['nama_penjual'];
+    $harga_jual = $_POST['harga_jual'];
+    $no_telpone = $_POST['no_telpone'];
+    $stok = $_POST['stok'];
+    $deksripsi_barang = $_POST['deksripsi_barang'];
 
-            // Perbaikan format nomor telepon untuk Indonesia
-            $no_telpone = preg_replace("/[^0-9]/", "", $no_telpone); // Hapus karakter selain angka
-            $no_telpone = "+62" . ltrim($no_telpone, "0"); // Tambahkan kode negara (+62) jika tidak ada
+    // Perbaikan format nomor telepon untuk Indonesia
+    $no_telpone = preg_replace("/[^0-9]/", "", $no_telpone); // Hapus karakter selain angka
+    $no_telpone = "+62" . ltrim($no_telpone, "0"); // Tambahkan kode negara (+62) jika tidak ada
 
-            if ($_FILES['gambar_produk']['name']) {
-                $nama_file = $_FILES['gambar_produk']['name'];
-                $ukuran_file = $_FILES['gambar_produk']['size'];
-                $tipe_file = $_FILES['gambar_produk']['type'];
-                $tmp_file = $_FILES['gambar_produk']['tmp_name'];
+    // Pengolahan QR Code Dana
+    if ($_FILES['dana']['name']) {
+        $nama_file_dana = $_FILES['dana']['name'];
+        $ukuran_file_dana = $_FILES['dana']['size'];
+        $tipe_file_dana = $_FILES['dana']['type'];
+        $tmp_file_dana = $_FILES['dana']['tmp_name'];
 
-                $ekstensi_diperbolehkan = array('png', 'jpg');
-                $x = explode('.', $nama_file);
-                $ekstensi = strtolower(end($x));
+        $ekstensi_diperbolehkan_dana = array('png', 'jpg');
+        $x_dana = explode('.', $nama_file_dana);
+        $ekstensi_dana = strtolower(end($x_dana));
 
-                if (in_array($ekstensi, $ekstensi_diperbolehkan) === true) {
-                    move_uploaded_file($tmp_file, '../../gambar/' . $nama_file);
-                    $query = "INSERT INTO barang (nama_barang, nama_penjual, gambar_produk, harga_jual, stok, deksripsi_barang, no_telpone) 
-                    VALUES ('$nama_barang', '$nama_penjual', '$nama_file', '$harga_jual', '$stok', '$deksripsi_barang', '$no_telpone')";
-                    $result = mysqli_query($conn, $query);
-                    if ($result) {
-                        echo "<script>alert('Data berhasil ditambahkan!'); window.location='stok_barang.php';</script>";
-                    } else {
-                        echo "Query Error: " . mysqli_error($conn);
-                    }
-                } else {
-                    echo "<script>alert('Ekstensi gambar hanya bisa jpg dan png!');</script>";
-                }
-            } else {
-                echo "<script>alert('Silahkan upload gambar ke jpg atau png!');</script>";
-            }
+        if (in_array($ekstensi_dana, $ekstensi_diperbolehkan_dana) === true) {
+            move_uploaded_file($tmp_file_dana, '../../dana/' . $nama_file_dana);
+            $qris_dana = $nama_file_dana;
+        } else {
+            echo "<script>alert('Ekstensi QR Code Dana hanya bisa jpg dan png!');</script>";
+            exit; // Hentikan eksekusi script jika ekstensi tidak sesuai
         }
-        ?>
+    } else {
+        echo "<script>alert('Silahkan upload QR Code Dana dalam format jpg atau png!');</script>";
+        exit; // Hentikan eksekusi script jika QR Code Dana tidak diupload
+    }
+
+    // Pengolahan Gambar Produk
+    if ($_FILES['gambar_produk']['name']) {
+        $nama_file_produk = $_FILES['gambar_produk']['name'];
+        $ukuran_file_produk = $_FILES['gambar_produk']['size'];
+        $tipe_file_produk = $_FILES['gambar_produk']['type'];
+        $tmp_file_produk = $_FILES['gambar_produk']['tmp_name'];
+
+        $ekstensi_diperbolehkan_produk = array('png', 'jpg');
+        $x_produk = explode('.', $nama_file_produk);
+        $ekstensi_produk = strtolower(end($x_produk));
+
+        if (in_array($ekstensi_produk, $ekstensi_diperbolehkan_produk) === true) {
+            move_uploaded_file($tmp_file_produk, '../../gambar/' . $nama_file_produk);
+
+            // Simpan data ke database
+            $query = "INSERT INTO barang (nama_barang, nama_penjual, gambar_produk, qris_dana, harga_jual, stok, deksripsi_barang, no_telpone) 
+                VALUES ('$nama_barang', '$nama_penjual', '$nama_file_produk', '$qris_dana', '$harga_jual', '$stok', '$deksripsi_barang', '$no_telpone')";
+            $result = mysqli_query($conn, $query);
+
+            if ($result) {
+                echo "<script>alert('Data berhasil ditambahkan!'); window.location='stok_barang.php';</script>";
+            } else {
+                echo "Query Error: " . mysqli_error($conn);
+            }
+        } else {
+            echo "<script>alert('Ekstensi gambar hanya bisa jpg dan png!');</script>";
+        }
+    } else {
+        echo "<script>alert('Silahkan upload gambar ke jpg atau png!');</script>";
+    }
+}
+?>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

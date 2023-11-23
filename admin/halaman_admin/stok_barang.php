@@ -147,6 +147,7 @@
                     <th>Nama_barang</th>
                     <th>Nama_penjual</th>
                     <th>Gambar_produk</th>
+                    <th>Qr dana</th>
                     <th>No_telpon wa</th>
                     <th>Harga_jual</th>
                     <th>Stok</th>
@@ -182,6 +183,7 @@
                         <td><?php echo $hasil['nama_barang'] ?></td>
                         <td><?php echo $hasil['nama_penjual'] ?></td>
                         <td><img src="../../gambar/<?php echo $hasil['gambar_produk']; ?>"></td>
+                        <td><img src="../../dana/<?php echo $hasil['dana']; ?>"></td>
                         <td><?php echo $hasil['no_telpone']; ?></td>
                         <td>Rp <?php echo number_format($hasil['harga_jual'], 0, ',', '.'); ?></td>
                         <td><?php echo number_format($hasil['stok'], 0, ',', '.'); ?></td>
