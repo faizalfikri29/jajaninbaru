@@ -183,7 +183,7 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                 <!-- ... Bagian lain dari kode HTML ... -->
 
                 <!-- Formulir Pembelian -->
-                <div class="form-section">
+                <div class="form-section" method="">
                     <label for="quantity">Jumlah yang Dibeli:</label>
                     <input type="number" id="quantity" name="quantity" min="1" value="#" oninput="updateTotal()">
 
@@ -254,12 +254,12 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                         // Lakukan pengecekan metode pembayaran
                         if (metodePembayaran === 'code') {
                             // Jika metode pembayaran COD, arahkan ke nomor WhatsApp penjual
-                            var message = "Pemesanan Produk";
-                            message += "Nama Produk: " + "<?php echo $detail['nama_barang']; ?>";
-                            message += "Jumlah: " + quantity;
-                            message += "Total: " + total;
-                            message += "Nama Pembeli: " + buyerName;
-                            message += "Alamat Pembeli: " + buyerAddress;
+                            var message = "Pemesanan Produk\n";
+                            message += "Nama Produk: " + "<?php echo $detail['nama_barang']; ?>\n";
+                            message += "Jumlah: " + quantity + "\n";
+                            message += "Total: " + total + "\n";
+                            message += "Nama Pembeli: " + buyerName + "\n";
+                            message += "Alamat Pembeli: " + buyerAddress + "\n";
                             message += "Nomor Telepon Pembeli: " + buyerPhone;
 
                             // Format nomor WhatsApp penjual
