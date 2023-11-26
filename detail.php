@@ -237,7 +237,6 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-                <!-- ... Bagian HTML sebelumnya ... -->
 
                 <script>
                     function submitForm() {
@@ -272,16 +271,13 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                             window.location.href = waUrl;
                         } else if (metodePembayaran === 'dana') {
                             // Jika metode pembayaran Dana, arahkan ke halaman dengan QR Code Dana penjual
-                            window.location.href = 'URL_HALAMAN_DANA_QR_CODE_PENJUAL';
+                            window.location.href = 'dana_qr.php'; // Ganti dengan URL halaman tampil QR Code Dana penjual
                         } else {
                             // Metode pembayaran tidak valid, tampilkan pesan kesalahan
                             alert('Pilih metode pembayaran terlebih dahulu.');
                         }
                     }
                 </script>
-
-
-                <!-- ... Bagian HTML setelahnya ... -->
 
 </body>
 

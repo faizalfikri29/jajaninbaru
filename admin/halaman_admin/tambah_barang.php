@@ -121,7 +121,7 @@ if (isset($_POST['simpan'])) {
             move_uploaded_file($tmp_file_produk, '../../gambar/' . $nama_file_produk);
 
             // Simpan data ke database
-            $query = "INSERT INTO barang (nama_barang, nama_penjual, gambar_produk, qris_dana, harga_jual, stok, deksripsi_barang, no_telpone) 
+            $query = "INSERT INTO barang (nama_barang, nama_penjual, gambar_produk, dana, harga_jual, stok, deksripsi_barang, no_telpone) 
                 VALUES ('$nama_barang', '$nama_penjual', '$nama_file_produk', '$qris_dana', '$harga_jual', '$stok', '$deksripsi_barang', '$no_telpone')";
             $result = mysqli_query($conn, $query);
 
