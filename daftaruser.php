@@ -98,8 +98,7 @@ include('koneksi.php');
                     <input type="password" class="form-control" name="password" id="password" placeholder="Masukkan Password"  required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block" name="daftar">Daftar</button>
-                <a class="btn btn-danger btn-block" href="../index.php">Batal</a>
-                <p class="text-center mt-3">Apakah sudah mempunyai akun? <a href="loginuser.php">Klik disini</a></p>
+                <a class="btn btn-danger btn-block" href="loginuser.php">Batal</a>
             </form>
         </div>
     </div>
