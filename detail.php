@@ -10,6 +10,7 @@ $detail = $ambil->fetch_assoc();
 
 // Mendapatkan nomor WhatsApp penjual dari data yang diambil
 $nomorWhatsAppPenjual = $detail['no_telpone'];
+$danaPenjual = $detail['dana'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -211,15 +212,10 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
 
                 <script>
                     function updateTotal() {
-                        // Ambil nilai jumlah dan harga dari elemen HTML
                         var quantity = document.getElementById('quantity').value;
                         var harga = <?php echo $detail["harga_jual"]; ?>;
-
-                        // Hitung total dan format sebagai mata uang Rupiah
                         var total = quantity * harga;
                         var formattedTotal = "Rp " + number_format(total);
-
-                        // Setel nilai total di elemen HTML
                         document.getElementById('total').value = formattedTotal;
                     }
 
@@ -228,10 +224,35 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                     }
 
                     function submitForm() {
-                        // Tambahkan logika pengiriman formulir di sini
-                        alert("Formulir terkirim!");
+                        var metodePembayaran = document.getElementById('pembayaran').value;
+                        var quantity = document.getElementById('quantity').value;
+                        var total = document.getElementById('total').value;
+                        var buyerName = document.getElementById('buyerName').value;
+                        var buyerAddress = document.getElementById('buyerAddress').value;
+                        var buyerPhone = document.getElementById('buyerPhone').value;
+
+                        if (metodePembayaran === 'code') {
+                            // Handle COD payment
+                            var message = "Pemesanan Produk\n";
+                            message += "Nama Produk: " + "<?php echo $detail['nama_barang']; ?>\n";
+                            message += "Jumlah: " + quantity + "\n";
+                            message += "Total: " + total + "\n";
+                            message += "Nama Pembeli: " + buyerName + "\n";
+                            message += "Alamat Pembeli: " + buyerAddress + "\n";
+                            message += "Nomor Telepon Pembeli: " + buyerPhone;
+
+                            var waNumber = "<?php echo $nomorWhatsAppPenjual; ?>";
+                            var waUrl = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+                            window.location.href = waUrl;
+                        } else if (metodePembayaran === 'dana') {
+                            // Handle Dana payment
+                            window.location.href = 'dana_qr.php?id=<?php echo $danaPenjual; ?>';
+                        } else {
+                            alert('Pilih metode pembayaran terlebih dahulu.');
+                        }
                     }
                 </script>
+
 
                 <!-- ... Bagian lain dari kode HTML ... -->
                 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -271,7 +292,7 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                             window.location.href = waUrl;
                         } else if (metodePembayaran === 'dana') {
                             // Jika metode pembayaran Dana, arahkan ke halaman dengan QR Code Dana penjual
-                            window.location.href = 'dana_qr.php'; // Ganti dengan URL halaman tampil QR Code Dana penjual
+                            window.location.href = 'dana_qr.php?id=<?php echo $danaPenjual; ?>'; // Ganti dengan URL halaman tampil QR Code Dana penjual
                         } else {
                             // Metode pembayaran tidak valid, tampilkan pesan kesalahan
                             alert('Pilih metode pembayaran terlebih dahulu.');

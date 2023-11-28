@@ -12,6 +12,7 @@ if (isset($_POST['update'])) {
 
     // Inisialisasi variabel untuk menyimpan nama gambar
     $image_name = "";
+    $image_dana = "";
 
     // Cek apakah gambar diunggah
     if ($_FILES['gambar_produk']['name']) {
@@ -22,9 +23,18 @@ if (isset($_POST['update'])) {
         move_uploaded_file($temp_image_name, '../../gambar/' . $image_name);
     }
 
+    // Cek apakah gambar qris dana diunggah
+    if ($_FILES['dana']['name']) {
+        $image_dana = $_FILES['dana']['name'];
+        $temp_image_dana = $_FILES['dana']['tmp_name'];
+
+        // Pindahkan gambar yang diunggah ke folder (misalnya 'gambar/')
+        move_uploaded_file($temp_image_dana, '../../dana/' . $image_dana);
+    }
+
     // Tentukan query SQL untuk melakukan update berdasarkan apakah gambar diunggah atau tidak
-    if ($image_name) {
-        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', no_telpone = '$no_telpone', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang', gambar_produk = '$image_name' WHERE id_barang = $id_barang";
+    if ($image_name || $image_dana) {
+        $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', no_telpone = '$no_telpone', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang', gambar_produk = '$image_name', dana = '$image_dana' WHERE id_barang = $id_barang";
     } else {
         $query = "UPDATE barang SET nama_barang = '$nama_barang', nama_penjual = '$nama_penjual', no_telpone = '$no_telpone', harga_jual = $harga_jual, stok = $stok, deksripsi_barang = '$deksripsi_barang' WHERE id_barang = $id_barang";
     }
@@ -37,4 +47,3 @@ if (isset($_POST['update'])) {
         echo "Update failed: " . mysqli_error($conn);
     }
 }
-?>
