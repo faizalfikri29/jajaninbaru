@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Halaman Admin</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -66,7 +66,6 @@
             color: #33ccff;
         }
 
-        /* Tambahkan CSS khusus untuk formulir pencarian */
         .search-form {
             display: flex;
             align-items: center;
@@ -77,8 +76,8 @@
             margin-right: 10px;
         }
 
-        /* Tambahkan CSS untuk tombol "Kembali" */
-        .back-button {
+         /* CSS untuk tombol "Kembali" */
+         .back-button {
             margin-top: 10px;
             display: none; /* Sembunyikan tombol secara default */
         }
@@ -88,6 +87,7 @@
             text-align: center;
             margin-top: 20px;
         }
+
     </style>
 </head>
 <body>
@@ -124,9 +124,8 @@
     <div class="container table-container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Data User</h2>
-            <!-- Formulir pencarian -->
             <form method="post" action="" class="search-form">
-                <input type="text" name="keyword" class="form-control" placeholder="Cari user...">
+                <input type="text" name="keyword" class="form-control" placeholder="Cari Admin...">
                 <button type="submit" class="btn btn-outline-secondary">Cari</button>
             </form>
         </div>
@@ -145,143 +144,91 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody id="table-body">
-                <!-- Isi tabel akan diisi melalui JavaScript -->
-            </tbody>
+            <tbody> <!-- Mulai elemen tbody di sini -->
+                <?php
+                include 'koneksiuser.php';
+                $no = 1;
+
+                $currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+                $rowsPerPage = 5;
+                $startIndex = ($currentPage - 1) * $rowsPerPage;
+
+                if (isset($_POST['keyword'])) {
+                    $keyword = $_POST['keyword'];
+                    $query = "SELECT * FROM user WHERE nama LIKE '%$keyword%' LIMIT $startIndex, $rowsPerPage";
+                    $select = mysqli_query($conn, $query);
+                    // Tampilkan tombol "Kembali" saat melakukan pencarian
+                    echo '<style>.back-button { display: block; }</style>';
+                } else {
+                    $query = "SELECT * FROM user LIMIT $startIndex, $rowsPerPage";
+                }
+
+                $select = mysqli_query($conn, $query);
+                while ($hasil = mysqli_fetch_array($select)) {
+                ?>
+                    <tr>
+                        <th><?php echo $no++ ?></th>
+                        <td><?php echo $hasil['nama'] ?></td>
+                        <td><?php echo $hasil['tempat_lahir'] ?></td>
+                        <td><?php echo $hasil['tanggal_lahir'] ?></td>
+                        <td><?php echo $hasil['no_telepon'] ?></td>
+                        <td><?php echo $hasil['jenis_kelamin'] ?></td>
+                        <td><?php echo $hasil['alamat'] ?></td>
+                        <td><?php echo $hasil['username'] ?></td>
+                        <td><?php echo $hasil['password'] ?></td>
+                        <td class="action-buttons">
+                            <a href="hapus_data_user.php?id=<?php echo $hasil['id']; ?>" class="btn btn-danger delete" title="Hapus" onclick="return confirmDelete();">Hapus</a>
+                            <a href="edit_data_user.php?id=<?php echo $hasil['id']; ?>" class="btn btn-primary edit" title="Edit">Edit</a>
+                        </td>
+
+                        <script>
+                            function confirmDelete() {
+                                return confirm('Apakah Anda yakin ingin menghapus data ini?');
+                            }
+                        </script>
+
+                    </tr>
+                <?php
+                } 
+                ?>
+            </tbody> 
         </table>
-        <!-- Tombol untuk kembali ke halaman sebelumnya -->
         <a class="btn btn-secondary back-button" href="data_user.php">Kembali</a>
-        <!-- Pagination container -->
-        <div class="pagination-container">
-            <ul class="pagination" id="pagination">
-                <!-- Isi pagination akan diisi melalui JavaScript -->
-            </ul>
-        </div>
+    </div>
+    <div class="pagination-container">
+        <ul class= "pagination justify-content-center">
+            <?php
+            // Hitung jumlah total halaman
+            $totalRows = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM admin"));
+            $totalPages = ceil($totalRows / $rowsPerPage);
+
+            // Menampilkan tombol "Previous"
+            if ($currentPage > 1) {
+                echo '<li class="page-item"><a class="page-link" href="?page=' . ($currentPage - 1) . '">Previous</a></li>';
+            } else {
+                echo '<li class="page-item disabled"><span class="page-link">Previous</span></li>';
+            }
+
+            // Menampilkan nomor halaman
+            for ($i = 1; $i <= $totalPages; $i++) {
+                if ($i == $currentPage) {
+                    echo '<li class="page-item active"><span class="page-link">' . $i . '</span></li>';
+                } else {
+                    echo '<li class="page-item"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
+                }
+            }
+
+            // Menampilkan tombol "Next"
+            if ($currentPage < $totalPages) {
+                echo '<li class="page-item"><a class="page-link" href="?page=' . ($currentPage + 1) . '">Next</a></li>';
+            } else {
+                echo '<li class="page-item disabled"><span class="page-link">Next</span></li>';
+            }
+            ?>
+        </ul>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        // Data user contoh (ganti dengan data sesungguhnya)
-        var userData = [
-            <?php
-            include 'koneksiuser.php';
-            $select = mysqli_query($conn, "SELECT * FROM user");
-            while ($hasil = mysqli_fetch_array($select)) {
-                echo "{";
-                echo "nama: '" . $hasil['nama'] . "', ";
-                echo "tempat_lahir: '" . $hasil['tempat_lahir'] . "', ";
-                echo "tanggal_lahir: '" . $hasil['tanggal_lahir'] . "', ";
-                echo "no_telepon: '" . $hasil['no_telepon'] . "', ";
-                echo "jenis_kelamin: '" . $hasil['jenis_kelamin'] . "', ";
-                echo "alamat: '" . $hasil['alamat'] . "', ";
-                echo "username: '" . $hasil['username'] . "', ";
-                echo "password: '" . $hasil['password'] . "'";
-                echo "},";
-            }
-            ?>
-        ];
-
-        var currentPage = 1;
-        var rowsPerPage = 5;
-        var totalRows = userData.length;
-        var totalPages = Math.ceil(totalRows / rowsPerPage);
-        var startIndex = (currentPage - 1) * rowsPerPage;
-        var endIndex = startIndex + rowsPerPage;
-
-        function showTablePage() {
-            var tableBody = document.getElementById("table-body");
-            tableBody.innerHTML = "";
-            for (var i = startIndex; i < endIndex; i++) {
-                if (i >= totalRows) break;
-                var row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${i + 1}</td>
-                    <td>${userData[i].nama}</td>
-                    <td>${userData[i].tempat_lahir}</td>
-                    <td>${userData[i].tanggal_lahir}</td>
-                    <td>${userData[i].no_telepon}</td>
-                    <td>${userData[i].jenis_kelamin}</td>
-                    <td>${userData[i].alamat}</td>
-                    <td>${userData[i].username}</td>
-                    <td>${userData[i].password}</td>
-                    <td class="action-buttons">
-                        <a href="hapus_data_user.php?id=${i + 1}" class="btn btn-danger delete" title="Hapus" onclick="return confirmDelete();">Hapus</a>
-                        <a href="edit_data_user.php?id=${i + 1}" class="btn btn-primary edit" title="Edit">Edit</a>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            }
-        }
-
-        function showPagination() {
-            var pagination = document.getElementById("pagination");
-            pagination.innerHTML = "";
-
-            var prevButton = document.createElement("li");
-            prevButton.classList.add("page-item");
-            prevButton.innerHTML = `
-                <a class="page-link" href="#" aria-label="Previous" id="prev-button">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            `;
-
-            prevButton.addEventListener("click", function (e) {
-                e.preventDefault();
-                if (currentPage > 1) {
-                    currentPage--;
-                    updatePage();
-                }
-            });
-
-            pagination.appendChild(prevButton);
-
-            for (let i = 1; i <= totalPages; i++) {
-                var pageButton = document.createElement("li");
-                pageButton.classList.add("page-item");
-                if (i === currentPage) {
-                    pageButton.classList.add("active");
-                }
-                pageButton.innerHTML = `
-                    <a class="page-link" href="#" id="page-${i}">${i}</a>
-                `;
-
-                pageButton.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    currentPage = i;
-                    updatePage();
-                });
-
-                pagination.appendChild(pageButton);
-            }
-
-            var nextButton = document.createElement("li");
-            nextButton.classList.add("page-item");
-            nextButton.innerHTML = `
-                <a class="page-link" href="#" aria-label="Next" id="next-button">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            `;
-
-            nextButton.addEventListener("click", function (e) {
-                e.preventDefault();
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    updatePage();
-                }
-            });
-
-            pagination.appendChild(nextButton);
-        }
-
-        function updatePage() {
-            startIndex = (currentPage - 1) * rowsPerPage;
-            endIndex = startIndex + rowsPerPage;
-            showTablePage();
-            showPagination();
-        }
-
-        updatePage();
-    </script>
 </body>
 </html>
