@@ -232,24 +232,24 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
         </div>
 
         <script>
-            function showForm(selectedValue) {
-                // Sembunyikan semua formulir terlebih dahulu
-                document.getElementById("form-cod").style.display = "none";
-                document.getElementById("form-dana").style.display = "none";
+           function showForm(selectedValue) {
+    // Sembunyikan semua formulir terlebih dahulu
+    document.getElementById("form-cod").style.display = "none";
+    document.getElementById("form-dana").style.display = "none";
 
-                // Sembunyikan tombol "Beli Sekarang" secara default
-                document.getElementById("beli-sekarang-button").style.display = "none";
-                document.getElementById("beli-sekarang-dana-button").style.display = "none";
+    // Sembunyikan tombol "Beli Sekarang" secara default
+    document.getElementById("beli-sekarang-button").style.display = "none";
+    document.getElementById("beli-sekarang-dana-button").style.display = "none";
 
-                // Tampilkan formulir atau tombol yang dipilih
-                if (selectedValue === "code") {
-                    document.getElementById("form-cod").style.display = "block";
-                    document.getElementById("beli-sekarang-button").style.display = "block";
-                } else if (selectedValue === "dana") {
-                    document.getElementById("form-dana").style.display = "block";
-                    document.getElementById("beli-sekarang-dana-button").style.display = "block";
-                }
-            }
+    // Tampilkan formulir atau tombol yang dipilih
+    if (selectedValue === "code") {
+        document.getElementById("form-cod").style.display = "block";
+        document.getElementById("beli-sekarang-button").style.display = "block";
+    } else if (selectedValue === "dana") {
+        document.getElementById("form-dana").style.display = "block";
+        document.getElementById("beli-sekarang-dana-button").style.display = "block";
+    }
+}
 
             // Hitung total berdasarkan jumlah yang dibeli dan harga
             document.getElementById("jumlah").addEventListener("input", function () {
@@ -258,34 +258,50 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
                 var total = jumlah * harga;
                 document.getElementById("total").value = "Rp. " + formatNumber(total);
             });
+// ... Bagian JavaScript yang sudah ada ...
 
-            function beliSekarang() {
-                var namaPembeli = document.getElementById("nama_pembeli").value;
-                var nomorTelpPembeli = document.getElementById("no_telp_pembeli").value;
-                var alamatPembeli = document.getElementById("alamat_pembeli").value;
-                var jumlah = document.getElementById("jumlah").value;
-                var total = document.getElementById("total").value;
+function beliSekarang() {
+    var namaPembeli = document.getElementById("nama_pembeli").value;
+    var nomorTelpPembeli = document.getElementById("no_telp_pembeli").value;
+    var alamatPembeli = document.getElementById("alamat_pembeli").value;
+    var jumlah = document.getElementById("jumlah").value;
+    var total = document.getElementById("total").value;
 
-                // Pesan untuk ditampilkan di WhatsApp
-                var pesan = "Halo, saya ingin memesan:\n" +
-                    "Nama Barang: <?php echo $detail['nama_barang']; ?>\n" +
-                    "Jumlah: " + jumlah + "\n" +
-                    "Total Harga: " + total + "\n" +
-                    "Nama Pembeli: " + namaPembeli + "\n" +
-                    "Alamat Pembeli: " + alamatPembeli + "\n" +
-                    "Nomor Telepon Pembeli: " + nomorTelpPembeli;
+    // Validasi form
+    if (!namaPembeli || !nomorTelpPembeli || !alamatPembeli || !jumlah) {
+        alert('Mohon lengkapi semua data pembelian.');
+        return;
+    }
 
-                // Encode pesan untuk URL
-                var encodedPesan = encodeURIComponent(pesan);
+              // Pesan untuk ditampilkan di WhatsApp
+    var pesan = "Halo, saya ingin memesan:\n" +
+        "Nama Barang: <?php echo $detail['nama_barang']; ?>\n" +
+        "Jumlah: " + jumlah + "\n" +
+        "Total Harga: " + total + "\n" +
+        "Nama Pembeli: " + namaPembeli + "\n" +
+        "Alamat Pembeli: " + alamatPembeli + "\n" +
+        "Nomor Telepon Pembeli: " + nomorTelpPembeli;
 
-                // Redirect ke WhatsApp penjual dengan format link yang sesuai
-                window.location.href = "https://wa.me/<?php echo $nomorWhatsAppPenjual; ?>?text=" + encodedPesan;
-            }
+    // Encode pesan untuk URL
+    var encodedPesan = encodeURIComponent(pesan);
+
+    // Redirect ke WhatsApp penjual dengan format link yang sesuai
+    window.location.href = "https://wa.me/<?php echo $nomorWhatsAppPenjual; ?>?text=" + encodedPesan;
+}
+
+// ... Bagian JavaScript yang sudah ada ...
 
             function formatNumber(number) {
                 return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             }
         </script>
+
+
+
+<!-- ... Bagian lain dari kode HTML ... -->
+
+                    
+                <!-- ... Bagian lain dari kode HTML ... -->
                 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -297,7 +313,6 @@ $nomorWhatsAppPenjual = $detail['no_telpone'];
         // Metode pembayaran tidak valid, tampilkan pesan kesalahan
         alert('Pilih metode pembayaran terlebih dahulu.');
     }
-
 </script>    
 
 </body>

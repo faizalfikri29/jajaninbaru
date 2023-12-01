@@ -252,8 +252,9 @@ function showAlertAndRedirect($message, $location) {
                         <a class="nav-link" href="#">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="produk.php">Produk</a>
-                    </li>
+    <a class="nav-link" href="#" onclick="handleProdukClick()">Produk</a>
+</li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="about.php" >About Us</a>
                         <li class="nav-item">
@@ -604,6 +605,25 @@ function showAlertAndRedirect($message, $location) {
     }
     ?>
 }
+</script>
+<script>
+    // Fungsi untuk menampilkan peringatan login
+    function tampilkanPeringatanLogin() {
+        alert("Silakan login terlebih dahulu untuk melihat produk.");
+    }
+
+    // Fungsi untuk menangani klik tombol "Produk"
+    function handleProdukClick() {
+        <?php
+        if (isUserLoggedIn()) {
+            // Jika pengguna sudah login, redirect ke halaman produk.php
+            echo 'window.location.href = "produk.php";';
+        } else {
+            // Jika pengguna belum login, tampilkan peringatan login
+            echo 'tampilkanPeringatanLogin();';
+        }
+        ?>
+    }
 </script>
 
 

@@ -13,8 +13,6 @@ if (!$detail) {
     die('Data barang tidak ditemukan.');
 }
 
-// ... (sisa kode Anda)
-
 // Mendapatkan nomor WhatsApp penjual dari data yang diambil
 $nomorWhatsAppPenjual = $detail['no_telpone'];
 
@@ -38,13 +36,16 @@ if (file_exists($gambarQRDanaPath)) {
                 justify-content: center;
                 height: 100vh;
                 margin: 0;
+                overflow: hidden;
             }
 
             .image-container img {
                 max-width: 100%;
                 max-height: 100%;
             }
-    
+            .container {
+                overflow-y: hidden; /* Menambahkan properti overflow-y untuk mencegah scroll vertikal */
+            }
         </style>
     </head>
     <body>
@@ -53,52 +54,57 @@ if (file_exists($gambarQRDanaPath)) {
         </div>
 
         <div class="container mt-5">
-            <!-- Formulir Pembelian -->
-            <form id="form-pembelian" enctype="multipart/form-data">
-                <!-- Tambahkan elemen formulir seperti yang sudah Anda berikan -->
-                <!-- Pastikan untuk menyesuaikan atribut "for" dan "id" pada label dan input -->
+           <div class="container mt-5">
+    <!-- Peringatan -->
+    <div id="peringatan" class="alert alert-danger" style="display: none;">Silakan lengkapi semua data dengan benar.</div>
 
-                <!-- Jumlah yang dibeli -->
-                <div class="form-group">
-                    <label for="jumlah">Jumlah yang dibeli:</label>
-                    <input type="number" class="form-control" id="jumlah" name="jumlah" placeholder="Masukkan jumlah yang dibeli" oninput="hitungTotal()">
-                </div>
+    <!-- Formulir Pembelian -->
+    <form id="form-pembelian" enctype="multipart/form-data">
+        <!-- Tambahkan elemen formulir seperti yang sudah Anda berikan -->
+        <!-- Pastikan untuk menyesuaikan atribut "for" dan "id" pada label dan input -->
 
-                <!-- Total Harga -->
-                <div class="form-group">
-                    <label for="total">Total Harga:</label>
-                    <input type="text" class="form-control" id="total" name="total">
-                </div>
+        <!-- Jumlah yang dibeli -->
+        <div class="form-group">
+            <label for="jumlah">Jumlah yang dibeli:</label>
+            <input type="number" class="form-control" id="jumlah" name="jumlah" placeholder="Masukkan jumlah yang dibeli" oninput="hitungTotal()">
+        </div>
 
-                <!-- Nama Pembeli -->
-                <div class="form-group">
-                    <label for="nama_pembeli">Nama Pembeli:</label>
-                    <input type="text" class="form-control" id="nama_pembeli" name="nama_pembeli" placeholder="Masukkan nama Anda">
-                </div>
+        <!-- Total Harga -->
+        <div class="form-group">
+            <label for="total">Total Harga:</label>
+            <input type="text" class="form-control" id="total" name="total" readonly>
+        </div>
 
-                <!-- Alamat Pembeli -->
-                <div class="form-group">
-                    <label for="alamat_pembeli">Alamat Pembeli:</label>
-                    <input type="text" class="form-control" id="alamat_pembeli" name="alamat_pembeli" placeholder="Masukkan alamat Anda">
-                </div>
+        <!-- Nama Pembeli -->
+        <div class="form-group">
+            <label for="nama_pembeli">Nama Pembeli:</label>
+            <input type="text" class="form-control" id="nama_pembeli" name="nama_pembeli" placeholder="Masukkan nama Anda">
+        </div>
 
-                <!-- Nomor Telepon Pembeli -->
-                <div class="form-group">
-                    <label for="no_telp_pembeli">Nomor Telepon Pembeli:</label>
-                    <input type="text" class="form-control" id="no_telp_pembeli" name="no_telp_pembeli" placeholder="Masukkan nomor telepon Anda">
-                </div>
+        <!-- Alamat Pembeli -->
+        <div class="form-group">
+            <label for="alamat_pembeli">Alamat Pembeli:</label>
+            <input type="text" class="form-control" id="alamat_pembeli" name="alamat_pembeli" placeholder="Masukkan alamat Anda">
+        </div>
 
-                <!-- Unggah Bukti Pembayaran -->
-                <div class="form-group">
-                    <label for="foto_pembeli">Unggah Bukti Pembayaran:</label>
-                    <input type="file" class="form-control-file" id="foto_pembeli" name="foto_pembeli">
-                </div>
+        <!-- Nomor Telepon Pembeli -->
+        <div class="form-group">
+            <label for="no_telp_pembeli">Nomor Telepon Pembeli:</label>
+            <input type="text" class="form-control" id="no_telp_pembeli" name="no_telp_pembeli" placeholder="Masukkan nomor telepon Anda">
+        </div>
 
 
-                <!-- Tombol "Hubungi Penjual" -->
-                <button class="btn btn-primary" onclick="hubungiPenjual()">Hubungi Penjual</button>
+                <!-- Tombol "Beli Sekarang" untuk metode pembayaran "Cod" -->
+                <button class="btn btn-primary" type="button" onclick="beliSekarang()">hubungi penjual</button>
+                <!-- Tombol "Batal" -->
+                <a class="btn btn-danger btn-beli" href="javascript:history.go(-1)">Batal</a>
+
+
             </form>
         </div>
+        <!-- Peringatan -->
+    <div id="peringatan" class="alert alert-danger" style="display: none;">Silahkan lengkapi semua data dengan benar.</div>
+</div>
 
         <script>
             function hitungTotal() {
@@ -113,18 +119,35 @@ if (file_exists($gambarQRDanaPath)) {
             }
 
             function beliSekarang() {
-                // Implementasikan logika untuk proses pembelian (sesuai kebutuhan)
-                // ...
+                var namaPembeli = document.getElementById("nama_pembeli").value;
+                var nomorTelpPembeli = document.getElementById("no_telp_pembeli").value;
+                var alamatPembeli = document.getElementById("alamat_pembeli").value;
+                var jumlah = document.getElementById("jumlah").value;
+                var total = document.getElementById("total").value;
+        
+                // Validasi formulir pembelian
+                if (!namaPembeli || !nomorTelpPembeli || !alamatPembeli || !jumlah) {
+                    document.getElementById("peringatan").style.display = "block";
+                    return;
+                }
+        
 
-                // Setelah pembelian berhasil, arahkan pengguna ke halaman terima kasih atau informasi lainnya
-                window.location.href = "terima_kasih.php";
-            }
+                // Pesan untuk ditampilkan di WhatsApp
+        var pesan = "Halo, saya ingin memesan:\n" +
+            "Nama Barang: ' . $detail['nama_barang'] . '\n" +
+            "Jumlah: " + jumlah + "\n" +
+            "Total Harga: " + total + "\n" +
+            "Nama Pembeli: " + namaPembeli + "\n" +
+            "Alamat Pembeli: " + alamatPembeli + "\n" +
+            "Nomor Telepon Pembeli: " + nomorTelpPembeli + "\n\n" +
+            "Silakan sertakan bukti pembayaran dalam pesan ini.";
 
-            function hubungiPenjual() {
-                // Menggunakan format URL WhatsApp untuk mengarahkan ke aplikasi WhatsApp
-                var url = "https://wa.me/' . $detail['no_telpone'] . '";
-                window.location.href = url;
-            }
+        // Encode pesan untuk URL
+        var encodedPesan = encodeURIComponent(pesan);
+
+        // Redirect ke WhatsApp penjual dengan format link yang sesuai
+        window.location.href = "https://wa.me/' . $nomorWhatsAppPenjual . '?text=" + encodedPesan;
+    }
         </script>
     </body>
     </html>';
